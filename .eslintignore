@@ -1,0 +1,6 @@
+!.eslintrc.js
+**/*.min.js
+
+**/node_modules/**
+
+dist/**/*.js
