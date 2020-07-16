@@ -58,15 +58,17 @@ result.name_length = (result.name||'').length;
 return result;
 ```
 
-### Set conductor proxy as CONDUCTOR_API variable
+### Set CONDUCTOR_API variable
+Assuming tenant 'fb-test' and user 'fbuser' are set up in Keycloak,
+use workflow-proxy
 ```shell script
 CONDUCTOR_API="http://localhost:8088/proxy/api"
-```
-
-### Set SECURITY_HEADERS variable
-Assuming tenant 'fb-test' and user 'fbuser' are set up in Keycloak, set
-```shell script
 SECURITY_HEADERS=(-H "x-tenant-id: fb-test" -H "from: fbuser")
+```
+To bypass proxy and go directly to conductor-server,
+```shell script
+CONDUCTOR_API="http://localhost:8050/api"
+SECURITY_HEADERS=()
 ```
 
 ### Create new workflow wasm-example
