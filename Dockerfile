@@ -4,7 +4,7 @@ RUN wget -q https://github.com/wasmerio/wasmer/releases/download/0.17.0/wasmer-l
  tar xvfz wasmer.tar.gz
 
 FROM wasienv/wasienv as qjs-wasi
-RUN apt-get install -y make gcc git
+RUN apt-get update && apt-get install -y make gcc git
 COPY --from=wasmer /wasmer/bin/wasmer /root/.wasienv/bin/
 RUN git clone https://github.com/robot-rumble/qjs-wasi.git /qjs
 WORKDIR /qjs/src
