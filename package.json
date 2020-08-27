@@ -20,7 +20,7 @@
     "nodemon": "^2.0.4"
   },
   "scripts": {
-    "start": "node -r @babel/register src/index.js",
-    "start:dev": "nodemon -w ./src -w .env -r @babel/register src/index.js"
+    "start": "node --unhandled-rejections=strict -r @babel/register src/index.js",
+    "start:dev": "nodemon --unhandled-rejections=strict -w ./src -w .env -r @babel/register src/index.js"
   }
 }
