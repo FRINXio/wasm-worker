@@ -12,11 +12,14 @@
 import {checkWasmer} from './wasmer.js';
 import {executePython, pythonHealthCheck} from './python.js';
 import {executeQuickJs, quickJsHealthCheck} from './quickjs.js';
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const ConductorClient = require('conductor-client').default;
 // properties
 const conductorApiUrl =
-  process.env.CONDUCTOR_API_URL || 'http://conductor-server:8080/api';
+  process.env.CONDUCTOR_API_URL || 'http://workflow_proxy:8089/api';
 const maxRunner = process.env.MAX_RUNNER || 1;
 
 const conductorClient = new ConductorClient({
@@ -80,7 +83,7 @@ async function checkAndRegister(wasmSuffix, healthCheckFn, executeFn) {
     );
   }
   registerWasmWorker(wasmSuffix, async (data, updater) => {
-    console.info(wasmSuffix + ' got new task', {inputData: data.inputData});
+    console.info(wasmSuffix + ' got new task', { data });
     const inputData = data.inputData;
     const args = inputData.args;
     const outputIsJson = inputData.outputIsJson;
@@ -118,6 +121,7 @@ async function checkAndRegister(wasmSuffix, healthCheckFn, executeFn) {
 }
 
 async function registerTaskDefs() {
+  console.log('registerTaskDefs');
   const taskDefs = [
     {
       name: 'GLOBAL___js',
@@ -147,7 +151,6 @@ async function registerTaskDefs() {
 
 async function init() {
   await checkWasmer();
-
   await registerTaskDefs();
 
   const workers = new Map([
@@ -164,16 +167,4 @@ async function init() {
   }
 }
 
-async function initWithRetry() {
-  // auto reconnect is not supported by conductor-client,
-  // retry on error here
-  try {
-    await init();
-    return;
-  } catch (error) {
-    console.error('Got error, reconnecting', {error});
-    setTimeout(initWithRetry, 1000);
-  }
-}
-
-initWithRetry();
+init();
