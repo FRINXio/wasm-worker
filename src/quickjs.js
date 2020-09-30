@@ -24,7 +24,11 @@ console.error = function(...args) {
   std.err.puts(args.join(' '));
   std.err.puts('\\n');
 }
+console.log = console.error;
 log = console.error;
+print = function(...args) {
+  std.out.puts(args.join(' '));
+}
 let result = function() {
 ${script}
 }();
@@ -49,12 +53,17 @@ if (result != null) {
 
 export async function quickJsHealthCheck() {
   try {
-    const {stdout, stderr} = await executeQuickJs(
-      `log('stderr');return 'stdout'`,
+    const {stdout, stderr} = await executeQuickJs(`
+      console.log('console.log');
+      log('log');
+      console.error('console.error');
+      print("print\\n");
+      return 'result';
+      `,
       [],
       {},
     );
-    if (stdout == 'stdout' && stderr == 'stderr\n') {
+    if (stdout == 'print\nresult' && stderr == 'console.log\nlog\nconsole.error\n') {
       return true;
     }
     console.warn('Unexpected healthcheck result', {stdout, stderr});

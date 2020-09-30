@@ -19,7 +19,7 @@ dotenv.config();
 const ConductorClient = require('conductor-client').default;
 // properties
 const conductorApiUrl =
-  process.env.CONDUCTOR_API_URL || 'http://workflow_proxy:8089/api';
+  process.env.CONDUCTOR_URL || 'http://workflow_proxy:8089/api';
 const maxRunner = process.env.MAX_RUNNER || 1;
 
 const conductorClient = new ConductorClient({

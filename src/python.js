@@ -94,12 +94,15 @@ if not result is None:
 
 export async function pythonHealthCheck() {
   try {
-    const {stdout, stderr} = await executePython(
-      `log('stderr');return 'stdout'`,
+    const {stdout, stderr} = await executePython(`
+      log('log')
+      print('print\\n',end='')
+      return 'result'
+      `,
       [],
       {},
     );
-    if (stdout == 'stdout' && stderr == 'stderr\n') {
+    if (stdout == 'print\nresult' && stderr == 'log\n') {
       return true;
     }
     console.warn('Unexpected healthcheck result', {stdout, stderr});

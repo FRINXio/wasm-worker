@@ -3,6 +3,19 @@
 Run lambda tasks inside a web assembly engine [wasmer](https://wasmer.io/).
 Every execution spawns a new short lived process.
 
+## Running locally
+Install [wapm](https://wapm.io), then install packages
+[python](https://wapm.io/package/python) and [quickjs](https://wapm.io/package/quickjs).
+Run:
+```sh
+WASMER_PATH=~/.wasmer/wasmer \
+QUICKJS_PATH=~/.wasmer/globals/wapm_packages/_/quickjs@0.0.3/build/qjs.wasm \
+CONDUCTOR_URL=http://localhost:8089/api \
+PYTHON_PATH=~/.wasmer/globals/wapm_packages/_/python@0.1.0/bin/python.wasm \
+PYTHON_LIB_PATH=~/.wasmer/globals/wapm_packages/_/python@0.1.0/lib/ \
+yarn start:dev
+```
+
 ## Usage
 
 Currently supports two task types: `GLOBAL___js` and `GLOBAL___py`.
@@ -19,9 +32,9 @@ to plaintext on parsing failure.
 Task `GLOBAL___js` uses [QuickJs](https://bellard.org/quickjs/) engine, compiled to wasm [(demo)](https://wapm.io/package/quickjs).
 
 ### APIs
-Task result is written using `console.log` or by `return`ing the value (preferred).
+Task result is written using `print` (no newline is appended) or by `return`ing the value (preferred).
 
-Log messages are written using `log` or `console.error`.
+Log messages are written using `log` (preferred) or `console.error` or `console.log`. Newline is appended in any case.
 
 Input data is available in `$` global variable.
 Use `$.lambdaValue` to get task input.
@@ -32,9 +45,10 @@ This is backwards compatibile with
 Task `GLOBAL___py` uses CPython 3.6 compiled to wasm [(demo)](https://wapm.io/package/python).
 
 ### APIs
-Task result is written using `print` or by `return`ing the value (preferred).
+Task result is written using `print` (adds newline) or by `return`ing the value (preferred).
+It is possible to disable adding newline character using `print('msg',end='')` syntax.
 
-Log messages are written using `log` or `eprint`.
+Log messages are written using `log`.  Newline is appended in both cases.
 
 Input data is available in `inputData` global variable.
 Use `inputData["lambdaValue"]` to get task input.
@@ -58,7 +72,7 @@ result.name_length = (result.name||'').length;
 return result;
 ```
 
-### Set CONDUCTOR_API variable
+### Set CONDUCTOR_API variable (not used by wasm-worker)
 Assuming tenant 'fb-test' and user 'fbuser' are set up in Keycloak,
 use workflow-proxy
 ```shell script
