@@ -85,6 +85,7 @@ async function checkAndRegister(wasmSuffix, healthCheckFn, executeFn) {
   registerWasmWorker(wasmSuffix, async (data, updater) => {
     console.info(wasmSuffix + ' got new task', { data });
     const inputData = data.inputData;
+    const taskId = data.taskId;
     const args = inputData.args;
     const outputIsJson = inputData.outputIsJson;
     const scriptExpression = inputData.scriptExpression;
@@ -93,6 +94,7 @@ async function checkAndRegister(wasmSuffix, healthCheckFn, executeFn) {
         scriptExpression,
         args,
         inputData,
+        taskId
       );
       await createTaskResult(outputIsJson, {result: stdout}, stderr, updater);
     } catch (e) {

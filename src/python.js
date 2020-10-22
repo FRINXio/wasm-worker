@@ -26,6 +26,7 @@ export async function executePython(
   script: string,
   args: string[],
   inputData: mixed,
+  taskId = "UnknownID"
 ) {
   const start = new Date();
   const tmpFolder = await tmp.dir({unsafeCleanup: true});
@@ -39,6 +40,7 @@ export async function executePython(
       script,
       args,
       inputData,
+      taskId,
     );
   } finally {
     await tmpFolder.cleanup();
@@ -50,6 +52,7 @@ async function executePythonWithLibFolder(
   script: string,
   args: string[],
   inputData: mixed,
+  taskId = "UnknownID"
 ) {
   const escapedInputDataJson = escapeJson(inputData);
   script = `
@@ -83,11 +86,14 @@ if not result is None:
     script,
   ];
   try {
+    console.time('executePython for task: ' + taskId + ' took');
     const {stdout, stderr} = await executeWasmer(wasmerArgs);
     console.info('executePython succeeded', {stdout, stderr});
+    console.timeEnd('executePython for task: ' + taskId + ' took');
     return {stdout, stderr};
   } catch (error) {
     console.warn('executePython failed', {script, args, error});
+    console.timeEnd('executePython for task: ' + taskId + ' took');
     throw error;
   }
 }
