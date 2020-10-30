@@ -1,0 +1,1 @@
+REGISTRY: {{ env "REGISTRY" | default "facebookconnectivity-hub-docker.jfrog.io" | quote }}

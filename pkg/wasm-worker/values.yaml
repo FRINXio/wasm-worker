@@ -5,7 +5,7 @@
 replicaCount: 1
 
 image:
-  repository: facebookconnectivity-hub-docker.jfrog.io/wasm-worker
+  name: wasm-worker
   pullPolicy: Always
   tag: "latest"
 
